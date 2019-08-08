@@ -15,7 +15,6 @@
  */
 package com.hierynomus.sshj
 
-import com.hierynomus.sshj.signature.SignatureEdDSA
 import net.schmizz.sshj.DefaultConfig
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.signature.SignatureECDSA
@@ -40,8 +39,8 @@ class IntegrationSpec extends IntegrationBaseSpec {
         sshClient.isConnected()
 
         where:
-        signatureFactory << [new SignatureECDSA.Factory256(), new SignatureEdDSA.Factory()]
-        fingerprint << ["d3:6a:a9:52:05:ab:b5:48:dd:73:60:18:0c:3a:f0:a3", "dc:68:38:ce:fc:6f:2c:d6:6d:6b:34:eb:5c:f0:41:6a"]
+        signatureFactory << [new SignatureECDSA.Factory256()]
+        fingerprint << ["d3:6a:a9:52:05:ab:b5:48:dd:73:60:18:0c:3a:f0:a3"]
         signatureName = signatureFactory.getName()
     }
 

@@ -15,12 +15,7 @@
  */
 package net.schmizz.sshj.common;
 
-import com.hierynomus.sshj.signature.Ed25519PublicKey;
 import com.hierynomus.sshj.userauth.certificate.Certificate;
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveSpec;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import net.schmizz.sshj.common.Buffer.BufferException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,43 +159,6 @@ public enum KeyType {
         @Override
         protected boolean isMyType(Key key) {
             return ECDSAVariationsAdapter.isECKeyWithFieldSize(key, 521);
-        }
-    },
-
-    ED25519("ssh-ed25519") {
-        private final Logger log = LoggerFactory.getLogger(KeyType.class);
-        @Override
-        public PublicKey readPubKeyFromBuffer(Buffer<?> buf) throws GeneralSecurityException {
-            try {
-                final int keyLen = buf.readUInt32AsInt();
-                final byte[] p = new byte[keyLen];
-                buf.readRawBytes(p);
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Key algo: %s, Key curve: 25519, Key Len: %s\np: %s",
-                            sType,
-                            keyLen,
-                            Arrays.toString(p))
-                    );
-                }
-
-                EdDSANamedCurveSpec ed25519 = EdDSANamedCurveTable.getByName("Ed25519");
-                EdDSAPublicKeySpec publicSpec = new EdDSAPublicKeySpec(p, ed25519);
-                return new Ed25519PublicKey(publicSpec);
-
-            } catch (Buffer.BufferException be) {
-                throw new SSHRuntimeException(be);
-            }
-        }
-
-        @Override
-        protected void writePubKeyContentsIntoBuffer(PublicKey pk, Buffer<?> buf) {
-            EdDSAPublicKey key = (EdDSAPublicKey) pk;
-            buf.putBytes(key.getAbyte());
-        }
-
-        @Override
-        protected boolean isMyType(Key key) {
-            return "EdDSA".equals(key.getAlgorithm());
         }
     },
 

@@ -16,9 +16,6 @@
 package com.hierynomus.sshj.userauth.keyprovider;
 
 import com.hierynomus.sshj.transport.cipher.BlockCiphers;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import net.schmizz.sshj.common.*;
 import net.schmizz.sshj.common.Buffer.PlainBuffer;
 import net.schmizz.sshj.transport.cipher.Cipher;
@@ -192,14 +189,6 @@ public class OpenSSHKeyV1KeyFile extends BaseFileKeyProvider {
         logger.info("Read key type: {}", keyType, kt);
         KeyPair kp;
         switch (kt) {
-            case ED25519:
-                keyBuffer.readBytes(); // string publickey (again...)
-                keyBuffer.readUInt32(); // length of privatekey+publickey
-                byte[] privKey = new byte[32];
-                keyBuffer.readRawBytes(privKey); // string privatekey
-                keyBuffer.readRawBytes(new byte[32]); // string publickey (again...)
-                kp = new KeyPair(publicKey, new EdDSAPrivateKey(new EdDSAPrivateKeySpec(privKey, EdDSANamedCurveTable.getByName("Ed25519"))));
-                break;
             case RSA:
                 BigInteger n = keyBuffer.readMPInt(); // Modulus
                 keyBuffer.readMPInt(); // Public Exponent
