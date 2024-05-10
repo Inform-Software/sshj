@@ -16,12 +16,6 @@
 package net.schmizz.sshj.userauth.keyprovider;
 
 import com.hierynomus.sshj.common.KeyAlgorithm;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveSpec;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
-import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import net.schmizz.sshj.common.*;
 import net.schmizz.sshj.userauth.password.PasswordUtils;
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
@@ -166,12 +160,6 @@ public class PuTTYKeyFile extends BaseFileKeyProvider {
             } catch (InvalidKeySpecException e) {
                 throw new IOException(e.getMessage(), e);
             }
-        }
-        if (KeyType.ED25519.equals(keyType)) {
-            EdDSANamedCurveSpec ed25519 = EdDSANamedCurveTable.getByName("Ed25519");
-            EdDSAPublicKeySpec publicSpec = new EdDSAPublicKeySpec(publicKeyReader.readBytes(), ed25519);
-            EdDSAPrivateKeySpec privateSpec = new EdDSAPrivateKeySpec(privateKeyReader.readBytes(), ed25519);
-            return new KeyPair(new EdDSAPublicKey(publicSpec), new EdDSAPrivateKey(privateSpec));
         }
         final String ecdsaCurve;
         switch (keyType) {

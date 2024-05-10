@@ -49,7 +49,6 @@ dependencies {
   implementation "org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion"
   implementation "org.bouncycastle:bcpkix-jdk18on:$bouncycastleVersion"
   implementation "com.hierynomus:asn-one:0.6.0"
-  implementation "net.i2p.crypto:eddsa:0.3.0"
 }
 
 license {

@@ -21,9 +21,6 @@ import com.hierynomus.sshj.transport.cipher.BlockCiphers;
 import com.hierynomus.sshj.transport.cipher.ChachaPolyCiphers;
 import com.hierynomus.sshj.transport.cipher.GcmCiphers;
 import com.hierynomus.sshj.userauth.keyprovider.bcrypt.BCrypt;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import net.schmizz.sshj.common.*;
 import net.schmizz.sshj.common.Buffer.PlainBuffer;
 import net.schmizz.sshj.transport.cipher.Cipher;
@@ -351,14 +348,6 @@ public class OpenSSHKeyV1KeyFile extends BaseFileKeyProvider {
 
         KeyPair kp;
         switch (kt) {
-            case ED25519:
-                keyBuffer.readBytes(); // string publickey (again...)
-                keyBuffer.readUInt32(); // length of privatekey+publickey
-                byte[] privKey = new byte[32];
-                keyBuffer.readRawBytes(privKey); // string privatekey
-                keyBuffer.readRawBytes(new byte[32]); // string publickey (again...)
-                kp = new KeyPair(publicKey, new EdDSAPrivateKey(new EdDSAPrivateKeySpec(privKey, EdDSANamedCurveTable.getByName("Ed25519"))));
-                break;
             case RSA:
                 final RSAPrivateCrtKeySpec rsaPrivateCrtKeySpec = readRsaPrivateKeySpec(keyBuffer);
                 final PrivateKey privateKey = SecurityUtils.getKeyFactory(KeyAlgorithm.RSA).generatePrivate(rsaPrivateCrtKeySpec);

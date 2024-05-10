@@ -40,7 +40,6 @@ public class RsaShaKeySignatureTest {
                 Arguments.of("ssh_host_ecdsa_256_key", KeyAlgorithms.ECDSASHANistp256()),
                 Arguments.of("ssh_host_ecdsa_384_key", KeyAlgorithms.ECDSASHANistp384()),
                 Arguments.of("ssh_host_ecdsa_521_key", KeyAlgorithms.ECDSASHANistp521()),
-                Arguments.of("ssh_host_ed25519_384_key", KeyAlgorithms.EdDSA25519()),
                 Arguments.of("ssh_host_rsa_2048_key", KeyAlgorithms.RSASHA512()));
     }
 

@@ -16,20 +16,12 @@
 package net.schmizz.sshj.common;
 
 import com.hierynomus.sshj.common.KeyAlgorithm;
-import com.hierynomus.sshj.signature.Ed25519PublicKey;
-import com.hierynomus.sshj.signature.SignatureEdDSA;
 import com.hierynomus.sshj.userauth.certificate.Certificate;
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveSpec;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import net.schmizz.sshj.common.Buffer.BufferException;
 import net.schmizz.sshj.signature.Signature;
 import net.schmizz.sshj.signature.SignatureDSA;
 import net.schmizz.sshj.signature.SignatureECDSA;
 import net.schmizz.sshj.signature.SignatureRSA;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -172,43 +164,6 @@ public enum KeyType {
         }
     },
 
-    ED25519("ssh-ed25519") {
-        private final Logger log = LoggerFactory.getLogger(KeyType.class);
-        @Override
-        public PublicKey readPubKeyFromBuffer(Buffer<?> buf) throws GeneralSecurityException {
-            try {
-                final int keyLen = buf.readUInt32AsInt();
-                final byte[] p = new byte[keyLen];
-                buf.readRawBytes(p);
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Key algo: %s, Key curve: 25519, Key Len: %s\np: %s",
-                            sType,
-                            keyLen,
-                            Arrays.toString(p))
-                    );
-                }
-
-                EdDSANamedCurveSpec ed25519 = EdDSANamedCurveTable.getByName("Ed25519");
-                EdDSAPublicKeySpec publicSpec = new EdDSAPublicKeySpec(p, ed25519);
-                return new Ed25519PublicKey(publicSpec);
-
-            } catch (Buffer.BufferException be) {
-                throw new SSHRuntimeException(be);
-            }
-        }
-
-        @Override
-        protected void writePubKeyContentsIntoBuffer(PublicKey pk, Buffer<?> buf) {
-            EdDSAPublicKey key = (EdDSAPublicKey) pk;
-            buf.putBytes(key.getAbyte());
-        }
-
-        @Override
-        protected boolean isMyType(Key key) {
-            return "EdDSA".equals(key.getAlgorithm());
-        }
-    },
-
     /** Signed rsa certificate */
     RSA_CERT("ssh-rsa-cert-v01@openssh.com") {
         @Override
@@ -254,29 +209,6 @@ public enum KeyType {
         @Override
         public KeyType getParent() {
             return KeyType.DSA;
-        }
-    },
-
-    ED25519_CERT("ssh-ed25519-cert-v01@openssh.com") {
-        @Override
-        public PublicKey readPubKeyFromBuffer(Buffer<?> buf)
-                throws GeneralSecurityException {
-            return CertUtils.readPubKey(buf, ED25519);
-        }
-
-        @Override
-        protected void writePubKeyContentsIntoBuffer(PublicKey pk, Buffer<?> buf) {
-            CertUtils.writePubKeyContentsIntoBuffer(pk, ED25519, buf);
-        }
-
-        @Override
-        protected boolean isMyType(Key key) {
-            return CertUtils.isCertificateOfType(key, ED25519);
-        }
-
-        @Override
-        public KeyType getParent() {
-            return KeyType.ED25519;
         }
     },
 
@@ -579,9 +511,7 @@ public enum KeyType {
                 new SignatureECDSA.Factory384(),
                 new SignatureECDSA.Factory384(),
                 new SignatureECDSA.Factory521(),
-                new SignatureECDSA.Factory521(),
-                new SignatureEdDSA.Factory(),
-                new SignatureEdDSA.Factory());
+                new SignatureECDSA.Factory521());
 
         static boolean isCertificateOfType(Key key, KeyType innerKeyType) {
             if (!(key instanceof Certificate)) {

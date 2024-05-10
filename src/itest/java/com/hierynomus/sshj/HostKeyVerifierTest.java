@@ -42,8 +42,7 @@ public class HostKeyVerifierTest {
 
     public static Stream<Arguments> signatureAlgos() {
         return Stream.of(
-            Arguments.of(KeyAlgorithms.ECDSASHANistp256(), "d3:6a:a9:52:05:ab:b5:48:dd:73:60:18:0c:3a:f0:a3"),
-            Arguments.of(KeyAlgorithms.EdDSA25519(), "dc:68:38:ce:fc:6f:2c:d6:6d:6b:34:eb:5c:f0:41:6a"));
+            Arguments.of(KeyAlgorithms.ECDSASHANistp256(), "d3:6a:a9:52:05:ab:b5:48:dd:73:60:18:0c:3a:f0:a3"));
     }
 
     @ParameterizedTest(name = "Should connect with signature verified for Key Algorithm {0}")

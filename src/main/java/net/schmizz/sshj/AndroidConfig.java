@@ -35,7 +35,6 @@ public class AndroidConfig
     @Override
     protected void initKeyAlgorithms() {
         setKeyAlgorithms(Arrays.<Factory.Named<KeyAlgorithm>>asList(
-                KeyAlgorithms.EdDSA25519(),
                 KeyAlgorithms.SSHRSA(),
                 KeyAlgorithms.SSHDSA()
         ));
